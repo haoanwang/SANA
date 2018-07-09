@@ -1448,10 +1448,10 @@ void SANA::trackProgress(long long int i, bool end) {
 
 Alignment SANA::runRestartPhases() {
     cout << "new alignments phase" << endl;
-    Timer Temperature;
-    Temperature.start();
+    Timer TImer;
+    TImer.start();
     newAlignmentsCount = 0;
-    while (Temperature.elapsed() < minutesNewAlignments*60) {
+    while (TImer.elapsed() < minutesNewAlignments*60) {
         long long int iter = 0;
         // Alignment A = simpleRun(Alignment::random(n1, n2), 0.0, iter);
         Alignment A = simpleRun(getStartingAlignment(), 0.0, iter);
@@ -1604,14 +1604,14 @@ void SANA::searchTemperaturesByStatisticalTest() {
 
     cerr<<endl;
     //find the threshold score between random and not random temperature
-    Timer Temperature;
-    Temperature.start();
+    Timer TImer;
+    TImer.start();
     cout << "Computing distribution of scores of random alignments ";
     vector<double> upperBoundKScores(NUM_SAMPLES_RANDOM);
     for (uint i = 0; i < NUM_SAMPLES_RANDOM; i++) {
         upperBoundKScores[i] = scoreRandom();
     }
-    cout << "(" <<  Temperature.elapsedString() << ")" << endl;
+    cout << "(" <<  TImer.elapsedString() << ")" << endl;
     NormalDistribution dist(upperBoundKScores);
     double highThresholdScore = dist.quantile(HIGH_THRESHOLD_P);
     double lowThresholdScore = dist.quantile(LOW_THRESHOLD_P);
@@ -1635,7 +1635,7 @@ void SANA::searchTemperaturesByStatisticalTest() {
     cout << "Iterations per run: " << 10000.+100.*n1+10.*n2+n1*n2*0.1 << endl;
 
     uint count = 0;
-    Temperature.start();
+    TImer.start();
     while (fabs(lowerBoundTInitial - upperBoundTInitial)/lowerBoundTInitial > 0.05 and
             count <= 10) {
         //search in log space
@@ -1646,7 +1646,7 @@ void SANA::searchTemperaturesByStatisticalTest() {
 
         //we prefer false negatives (random scores classified as non-random)
         //than false positives (non-random scores classified as random)
-        cout << "Test " << count << " (" << Temperature.elapsedString() << "): ";
+        cout << "Test " << count << " (" << TImer.elapsedString() << "): ";
         count++;
         if (isRandomTInitial(midTInitial, highThresholdScore, lowThresholdScore)) {
             upperBoundTInitial = midTInitial;
@@ -2058,8 +2058,8 @@ double SANA::getIterPerSecond() {
 }
 
 void SANA::initIterPerSecond() {
-    Timer Temperature;
-    Temperature.start();
+    Timer TImer;
+    TImer.start();
     cout << "Determining iteration speed...." << endl;
 
     long long int iter = 1E6;
@@ -2070,7 +2070,7 @@ void SANA::initIterPerSecond() {
     }*/
     double res = iter/timer.elapsed();
     cout << "SANA does " << to_string(res)
-         << " iterations per second (took " << Temperature.elapsedString()
+         << " iterations per second (took " << TImer.elapsedString()
          << " doing " << iter << " iterations)" << endl;
 
     initializedIterPerSecond = true;
